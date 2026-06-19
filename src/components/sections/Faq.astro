@@ -1,0 +1,404 @@
+---
+import { faqs } from '../../config/faqs';
+---
+
+<section class="faq section-band" id="faq" aria-labelledby="faq-title">
+	<div class="section-inner faq-inner">
+		<div class="section-head faq-copy">
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-title">Preguntas frecuentes</h2>
+			<p class="faq-lead">Respuestas directas para decidir si Waichatt encaja con tu equipo, tus propiedades y tu forma de atender leads.</p>
+		</div>
+
+		<div class="faq-list" data-faq-list>
+			{faqs.map((faq, index) => (
+				<details class="faq-item" open={index === 0} style={`--item-index: ${index};`}>
+					<summary>
+						<span class="faq-question-block">
+							<span class="faq-tag">{faq.tag}</span>
+							<span class="faq-question">{faq.question}</span>
+						</span>
+						<span class="faq-toggle" aria-hidden="true">
+							<svg viewBox="0 0 24 24" focusable="false">
+								<path d="M6 9l6 6 6-6"></path>
+							</svg>
+						</span>
+					</summary>
+					<div class="faq-answer">
+						<p>{faq.answer}</p>
+					</div>
+				</details>
+			))}
+		</div>
+	</div>
+</section>
+
+<script is:inline>
+	const faqList = document.querySelector('[data-faq-list]');
+	const faqItems = document.querySelectorAll('[data-faq-list] details');
+	const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const canAnimate = 'animate' in Element.prototype;
+	const openDuration = 340;
+	const closeDuration = 280;
+	const easing = 'cubic-bezier(0.22, 1, 0.36, 1)';
+
+	faqItems.forEach((item) => {
+		item.dataset.state = item.open ? 'open' : 'closed';
+	});
+
+	// Animación de entrada: las tarjetas aparecen recién cuando la sección entra
+	// en el viewport (en vez de dispararse al cargar la página, estando fuera de pantalla).
+	if (faqList && !prefersReducedMotion && 'IntersectionObserver' in window) {
+		faqList.dataset.reveal = '';
+		const revealObserver = new IntersectionObserver((entries, observer) => {
+			if (entries.some((entry) => entry.isIntersecting)) {
+				faqList.classList.add('is-visible');
+				observer.disconnect();
+			}
+		}, { threshold: 0.15 });
+		revealObserver.observe(faqList);
+	}
+
+	if (prefersReducedMotion || !canAnimate) {
+		faqItems.forEach((item) => {
+			item.querySelector('summary')?.addEventListener('click', () => {
+				requestAnimationFrame(() => {
+					item.dataset.state = item.open ? 'open' : 'closed';
+				});
+			});
+		});
+	} else {
+		faqItems.forEach((item) => {
+			const summary = item.querySelector('summary');
+			const answer = item.querySelector('.faq-answer');
+			let animation = null;
+
+			if (!summary || !answer) return;
+
+			const cancelAnimation = () => {
+				if (!animation) return;
+				animation.onfinish = null;
+				animation.oncancel = null;
+				animation.cancel();
+				animation = null;
+			};
+
+			const finishAnimation = (open) => {
+				item.open = open;
+				item.dataset.state = open ? 'open' : 'closed';
+				animation = null;
+				item.style.height = '';
+				item.style.overflow = '';
+			};
+
+			// Abrir y cerrar comparten la misma mecánica (medir altura actual → animar
+			// hasta la altura destino); solo cambian el destino, la duración y el estado.
+			const animateTo = (shouldOpen) => {
+				const startHeight = `${item.getBoundingClientRect().height}px`;
+				cancelAnimation();
+
+				if (shouldOpen) item.open = true;
+				item.dataset.state = shouldOpen ? 'opening' : 'closing';
+				item.style.height = startHeight;
+				const endHeight = shouldOpen ? `${item.scrollHeight}px` : `${summary.offsetHeight}px`;
+
+				animation = item.animate({ height: [startHeight, endHeight] }, {
+					duration: shouldOpen ? openDuration : closeDuration,
+					easing,
+				});
+				const currentAnimation = animation;
+				currentAnimation.onfinish = () => finishAnimation(shouldOpen);
+				currentAnimation.oncancel = () => {
+					if (animation === currentAnimation) animation = null;
+				};
+			};
+
+			summary.addEventListener('click', (event) => {
+				event.preventDefault();
+				item.style.overflow = 'hidden';
+				animateTo(item.dataset.state === 'closing' || !item.open);
+			});
+		});
+	}
+</script>
+
+<style>
+	.faq {
+		background: linear-gradient(180deg, #f8fcfa 0%, var(--color-brand-soft) 100%);
+		/* `clip` evita el scroll horizontal sin crear un scroll-container que
+		   rompería el `position: sticky` de .faq-copy (y mantiene visible el eje Y). */
+		overflow-x: clip;
+	}
+
+	.faq-inner {
+		display: grid;
+		grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+		gap: clamp(34px, 6vw, 88px);
+		align-items: start;
+	}
+
+	.faq-copy {
+		position: sticky;
+		top: calc(var(--header-height) + 28px);
+		margin-bottom: 0;
+	}
+
+	.faq-lead {
+		margin: 18px 0 0;
+		max-width: 48ch;
+		font-size: 1.08rem;
+	}
+
+	.faq-list {
+		display: grid;
+		gap: 14px;
+	}
+
+	.faq-item {
+		--faq-chevron-rotation: 0deg;
+		--faq-edge-scale: 0;
+		--faq-stroke-width: 2.4;
+		--faq-visual-duration: 280ms;
+		position: relative;
+		overflow: clip;
+		border: 1px solid rgba(37, 154, 114, 0.14);
+		border-radius: var(--radius-lg);
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.88)),
+			var(--color-surface);
+		box-shadow:
+			0 1px 2px rgba(20, 32, 27, 0.04),
+			0 18px 48px rgba(20, 32, 27, 0.07);
+		transition:
+			transform 200ms ease,
+			border-color 200ms ease,
+			box-shadow 200ms ease,
+			background-color 200ms ease;
+	}
+
+	.faq-item::before {
+		content: '';
+		position: absolute;
+		inset: 0 auto 0 0;
+		width: 4px;
+		background: linear-gradient(180deg, var(--color-brand), #f2c94c);
+		transform: scaleY(var(--faq-edge-scale));
+		transform-origin: top;
+		transition: transform var(--faq-visual-duration) cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.faq-item[data-state='opening'] {
+		--faq-chevron-rotation: 180deg;
+		--faq-edge-scale: 1;
+		--faq-stroke-width: 2.8;
+		--faq-visual-duration: 340ms;
+	}
+
+	.faq-item[data-state='open'],
+	.faq-item[open]:not([data-state='closing']) {
+		--faq-chevron-rotation: 180deg;
+		--faq-edge-scale: 1;
+		--faq-stroke-width: 2.8;
+	}
+
+	.faq-item[data-state='closing'] {
+		--faq-chevron-rotation: 0deg;
+		--faq-edge-scale: 0;
+		--faq-stroke-width: 2.4;
+		--faq-visual-duration: 280ms;
+	}
+
+	.faq-item[data-state='opening'],
+	.faq-item[data-state='open'],
+	.faq-item[open]:not([data-state='closing']) {
+		border-color: rgba(37, 154, 114, 0.3);
+		background:
+			linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(249, 253, 251, 0.94)),
+			var(--color-surface);
+		box-shadow:
+			0 1px 2px rgba(20, 32, 27, 0.05),
+			0 28px 70px rgba(20, 32, 27, 0.1);
+	}
+
+	.faq-item:hover,
+	.faq-item:focus-within {
+		transform: translateY(-2px);
+		border-color: rgba(37, 154, 114, 0.28);
+		box-shadow:
+			0 1px 2px rgba(20, 32, 27, 0.05),
+			0 26px 64px rgba(20, 32, 27, 0.1);
+	}
+
+	.faq-item summary {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 42px;
+		gap: 18px;
+		align-items: center;
+		min-height: 88px;
+		padding: 22px clamp(20px, 3vw, 32px);
+		color: var(--color-text);
+		cursor: pointer;
+		list-style: none;
+	}
+
+	.faq-item summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq-question-block {
+		display: grid;
+		gap: 7px;
+		min-width: 0;
+	}
+
+	.faq-tag {
+		width: fit-content;
+		padding: 5px 9px;
+		border-radius: var(--radius-sm);
+		background: rgba(37, 154, 114, 0.1);
+		color: var(--color-brand-hover);
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0;
+		line-height: 1;
+		text-transform: uppercase;
+	}
+
+	.faq-question {
+		color: var(--color-text);
+		font-size: clamp(1.04rem, 1.28vw, 1.22rem);
+		font-weight: 800;
+		line-height: 1.32;
+	}
+
+	.faq-toggle {
+		display: grid;
+		place-items: center;
+		width: 42px;
+		height: 42px;
+		border: 1px solid rgba(37, 154, 114, 0.18);
+		border-radius: 50%;
+		background: var(--color-brand-soft);
+		color: var(--color-brand-strong);
+		transition:
+			transform var(--faq-visual-duration) cubic-bezier(0.22, 1, 0.36, 1),
+			background-color var(--faq-visual-duration) cubic-bezier(0.22, 1, 0.36, 1),
+			border-color var(--faq-visual-duration) cubic-bezier(0.22, 1, 0.36, 1),
+			color var(--faq-visual-duration) cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.faq-toggle svg {
+		width: 21px;
+		height: 21px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: var(--faq-stroke-width);
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		transform: rotate(var(--faq-chevron-rotation));
+		transform-origin: center;
+		transition:
+			transform var(--faq-visual-duration) cubic-bezier(0.22, 1, 0.36, 1),
+			stroke-width var(--faq-visual-duration) cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.faq-item[data-state='opening'] .faq-toggle,
+	.faq-item[data-state='open'] .faq-toggle,
+	.faq-item[open]:not([data-state='closing']) .faq-toggle {
+		border-color: var(--color-brand);
+		background: var(--color-brand);
+		color: #fff;
+	}
+
+	.faq-answer {
+		padding: 0 clamp(20px, 3vw, 32px) clamp(22px, 3vw, 30px);
+	}
+
+	.faq-answer p {
+		max-width: 72ch;
+		margin: -2px 0 0;
+		color: var(--color-muted);
+		font-size: clamp(1rem, 1.15vw, 1.1rem);
+		line-height: 1.65;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		/* JS agrega [data-reveal] antes de pintar: las tarjetas arrancan ocultas y
+		   aparecen recién cuando la sección entra en viewport (.is-visible).
+		   Sin JS, el selector no matchea y quedan visibles desde el inicio. */
+		[data-faq-list][data-reveal] .faq-item {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+
+		[data-faq-list][data-reveal].is-visible .faq-item {
+			animation: faq-item-in 560ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+			animation-delay: calc(var(--item-index) * 70ms);
+		}
+
+		.faq-item[open] .faq-answer {
+			animation: faq-answer-in 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+		}
+
+		@keyframes faq-item-in {
+			from {
+				opacity: 0;
+				transform: translateY(16px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@keyframes faq-answer-in {
+			from {
+				opacity: 0;
+				transform: translateY(-6px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	}
+
+	@media (max-width: 980px) {
+		.faq-inner {
+			grid-template-columns: 1fr;
+		}
+
+		.faq-copy {
+			position: static;
+			max-width: 720px;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.faq-list {
+			gap: 12px;
+		}
+
+		.faq-item summary {
+			grid-template-columns: minmax(0, 1fr) 36px;
+			min-height: 78px;
+			padding: 18px;
+		}
+
+		.faq-toggle {
+			width: 36px;
+			height: 36px;
+		}
+
+		.faq-toggle svg {
+			width: 19px;
+			height: 19px;
+		}
+
+		.faq-answer {
+			padding: 0 18px 22px;
+		}
+	}
+</style>

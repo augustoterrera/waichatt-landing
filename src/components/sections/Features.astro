@@ -1,0 +1,513 @@
+---
+import AgenteIa from '../mockups/AgenteIa.astro';
+import Conversaciones from '../mockups/Conversaciones.astro';
+
+type KanbanCard = {
+	name: string;
+	property: string;
+	date: string;
+	time: string;
+	plus?: string;
+	drag?: boolean;
+};
+
+const pipelineColumns: { title: string; count: number; cards: KanbanCard[] }[] = [
+	{
+		title: 'Visita Agendada',
+		count: 1,
+		cards: [{ name: 'Gustavo Salomone', property: 'Terreno en J. L. Suarez', date: '29 may', time: '13:57', plus: '+2' }],
+	},
+	{
+		title: 'Post Visita',
+		count: 2,
+		cards: [
+			{ name: 'Carla Ferreyra', property: 'Depto en Yerba Buena', date: '29 may', time: '14:00', plus: '+1' },
+			{ name: 'Diego Brizuela', property: 'Local en centro', date: '30 may', time: '11:20', drag: true },
+		],
+	},
+	{
+		title: 'Negociacion',
+		count: 2,
+		cards: [
+			{ name: 'Juan Lopez', property: 'Casa en J. L. Suarez', date: '05 jun', time: '17:28' },
+			{ name: 'Sofia Vega', property: 'PH en Tafi Viejo', date: '02 jun', time: '09:55', plus: '+2' },
+		],
+	},
+	{
+		title: 'Cerrado',
+		count: 2,
+		cards: [
+			{ name: 'Raul M', property: 'Francia 485', date: '04 jun', time: '14:38', plus: '+1' },
+			{ name: 'Lucia Romano', property: 'Depto en Barrio Norte', date: '08 jun', time: '16:10' },
+		],
+	},
+];
+---
+
+<section class="features section-band" id="funciones" aria-labelledby="funciones-title">
+	<div class="section-inner">
+		<div class="section-head section-head--center">
+			<p class="eyebrow">El producto</p>
+			<h2 id="funciones-title">Mirá Waichatt por dentro</h2>
+			<p>No es una promesa: es la herramienta real atendiendo, calificando y ordenando tu operación.</p>
+		</div>
+
+		<article class="product-showcase" aria-label="Waichatt atendiendo una conversación y completando el CRM en vivo">
+			<Conversaciones />
+		</article>
+
+		<div class="product-stack">
+			<article class="product-card product-card--pipeline">
+				<div class="product-copy">
+					<span class="product-eyebrow">
+						<svg class="product-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+						Pipeline
+					</span>
+					<h3>Tu embudo siempre ordenado</h3>
+					<p>Cada lead cae en la etapa que corresponde y avanza solo. Lo seguís en un tablero claro, sin cargar datos dos veces.</p>
+					<ul class="product-list">
+						<li><span>Etapas claras: de la visita agendada al cierre</span></li>
+						<li><span>La IA mueve los leads sin que cargues nada</span></li>
+						<li><span>Sabés siempre con quién seguir hoy</span></li>
+					</ul>
+				</div>
+
+				<div class="product-mock product-mock--wide" aria-label="Pipeline de ventas con leads por etapa" role="img">
+					<div class="kanban">
+						<header class="kanban-head">
+							<h4>Pipeline de ventas</h4>
+							<p>Gestioná tus oportunidades y el avance de clientes potenciales.</p>
+						</header>
+						<div class="kanban-cols">
+							{pipelineColumns.map((column) => (
+								<section class="kanban-col">
+									<h5>{column.title} <span>{column.count}</span></h5>
+									{column.cards.map((card) => (
+										<article class={card.drag ? 'kanban-card kanban-card--drag' : 'kanban-card'}>
+											<strong>{card.name}</strong>
+											<div class="kanban-property">{card.property}</div>
+											{card.plus && <span class="kanban-plus">{card.plus}</span>}
+											<div class="kanban-meta">
+												<span>
+													<svg class="product-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+													{card.date}
+												</span>
+												<span>
+													<svg class="product-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>
+													{card.time}
+												</span>
+											</div>
+											<div class="kanban-line"></div>
+											<div class="kanban-actions">
+												<svg class="product-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+												<svg class="product-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+											</div>
+										</article>
+									))}
+								</section>
+							))}
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<div class="product-card-shell product-card-shell--agent" data-agent-scroll-shell>
+				<article class="product-card product-card--agent">
+					<div class="product-copy product-copy--wide">
+						<span class="product-eyebrow">Agente IA</span>
+						<h3>Configurás tu agente y lo probás en vivo</h3>
+						<p>Decís qué puede hacer, cómo responde y cuándo se pausa si toma el control un asesor humano.</p>
+					</div>
+
+					<AgenteIa />
+				</article>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.features {
+		padding-top: clamp(64px, 7vw, 104px);
+		overflow: visible;
+	}
+
+	.features .section-head--center {
+		margin-bottom: clamp(28px, 3.5vw, 44px);
+	}
+
+	.product-card {
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		background:
+			linear-gradient(180deg, rgba(233, 245, 240, 0.58), rgba(255, 255, 255, 0) 46%),
+			var(--color-surface);
+		box-shadow:
+			0 1px 2px rgba(20, 32, 27, 0.04),
+			0 24px 70px rgba(20, 32, 27, 0.1);
+	}
+
+	.product-showcase {
+		margin-inline: auto;
+	}
+
+	.product-showcase :global(.cv) {
+		max-width: 1180px;
+		height: clamp(580px, 45vw, 640px);
+	}
+
+	.product-stack {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(28px, 4vw, 52px);
+		margin-top: clamp(28px, 4vw, 52px);
+		isolation: isolate;
+	}
+
+	.product-card {
+		position: relative;
+		padding: clamp(22px, 3.4vw, 46px);
+		overflow: hidden;
+	}
+
+	.product-card-shell {
+		position: relative;
+	}
+
+	.product-card-shell--agent {
+		z-index: 2;
+	}
+
+	.product-card--pipeline {
+		z-index: 1;
+	}
+
+	.product-card--agent {
+		z-index: 2;
+	}
+
+	.product-card--pipeline {
+		display: grid;
+		grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.15fr);
+		align-items: center;
+		gap: clamp(28px, 4vw, 56px);
+	}
+
+	.product-card--agent {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	.product-card--agent .product-copy p {
+		max-width: 760px;
+	}
+
+	.product-copy {
+		text-align: left;
+	}
+
+	.product-copy--wide {
+		max-width: 660px;
+	}
+
+	.product-eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 7px;
+		margin-bottom: 14px;
+		padding: 5px 12px;
+		border-radius: 999px;
+		background: var(--color-brand-soft);
+		color: var(--color-brand-hover);
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.product-copy h3 {
+		margin: 0;
+		color: var(--color-text);
+		font-size: clamp(1.55rem, 2.5vw, 2.1rem);
+		font-weight: 800;
+		line-height: 1.12;
+	}
+
+	.product-copy p {
+		margin: 12px 0 0;
+		color: var(--color-muted);
+		font-size: 1rem;
+		line-height: 1.6;
+	}
+
+	.product-list {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		margin: 18px 0 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.product-list li {
+		display: flex;
+		gap: 10px;
+		color: var(--color-muted);
+		font-size: 0.94rem;
+		line-height: 1.45;
+	}
+
+	.product-list li::before {
+		content: '';
+		flex: 0 0 auto;
+		width: 16px;
+		height: 16px;
+		margin-top: 2px;
+		border-radius: 5px;
+		background:
+			linear-gradient(135deg, var(--color-brand), var(--color-brand-hover));
+		clip-path: polygon(14% 53%, 28% 39%, 44% 55%, 73% 24%, 87% 38%, 44% 82%);
+	}
+
+	.product-icon {
+		display: inline-block;
+		width: 1em;
+		height: 1em;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		vertical-align: -0.12em;
+	}
+
+	.product-mock {
+		min-width: 0;
+	}
+
+	.kanban {
+		padding: 22px;
+		border: 1px solid var(--color-border);
+		border-radius: 18px;
+		background: var(--color-surface);
+		box-shadow: 0 20px 60px rgba(20, 32, 27, 0.1);
+	}
+
+	.kanban-head h4 {
+		margin: 0;
+		color: var(--color-text);
+		font-size: 1.25rem;
+		font-weight: 800;
+	}
+
+	.kanban-head p {
+		margin: 4px 0 18px;
+		color: var(--color-muted);
+		font-size: 0.92rem;
+	}
+
+	.kanban-cols {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(135px, 1fr));
+		gap: 14px;
+	}
+
+	.kanban-col h5 {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin: 0 0 12px;
+		color: #253246;
+		font-size: 0.86rem;
+		font-weight: 800;
+	}
+
+	.kanban-col h5 span {
+		padding: 2px 8px;
+		border-radius: 7px;
+		background: #eef0f3;
+		color: var(--color-muted);
+		font-size: 0.72rem;
+	}
+
+	.kanban-card {
+		position: relative;
+		margin-bottom: 11px;
+		padding: 13px;
+		border: 1px solid var(--color-border);
+		border-radius: 13px;
+		background: #fff;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	}
+
+	.kanban-card--drag {
+		z-index: 3;
+		animation: kanban-drag 4.5s ease-in-out infinite;
+		transform-origin: center;
+	}
+
+	.kanban-card strong {
+		display: block;
+		margin-bottom: 8px;
+		color: var(--color-text);
+		font-size: 0.88rem;
+	}
+
+	.kanban-property {
+		display: inline-block;
+		padding: 4px 8px;
+		border-radius: 7px;
+		background: #edf5ff;
+		color: #2568b7;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+	}
+
+	.kanban-plus {
+		margin-left: 4px;
+		color: #9aa1ab;
+		font-size: 0.72rem;
+		font-weight: 700;
+	}
+
+	.kanban-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-top: 11px;
+		color: #9aa1ab;
+		font-size: 0.72rem;
+	}
+
+	.kanban-meta span,
+	.kanban-actions {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+
+	.kanban-line {
+		height: 1px;
+		margin: 11px 0;
+		background: var(--color-border);
+	}
+
+	.kanban-actions {
+		color: #9aa1ab;
+	}
+
+	@keyframes kanban-drag {
+		0%,
+		12% {
+			transform: translateX(0) translateY(0) rotate(0);
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		}
+		22% {
+			transform: translateX(6px) translateY(-6px) rotate(2deg) scale(1.03);
+			box-shadow: 0 14px 30px rgba(31, 157, 107, 0.18);
+		}
+		50% {
+			transform: translateX(64px) translateY(-6px) rotate(2deg) scale(1.03);
+			box-shadow: 0 16px 34px rgba(31, 157, 107, 0.2);
+		}
+		68% {
+			transform: translateX(6px) translateY(-6px) rotate(2deg) scale(1.03);
+			box-shadow: 0 14px 30px rgba(31, 157, 107, 0.18);
+		}
+		80%,
+		100% {
+			transform: translateX(0) translateY(0) rotate(0);
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		}
+	}
+
+	@media (max-width: 1080px) {
+		.product-card--pipeline {
+			grid-template-columns: 1fr;
+		}
+
+		.product-copy--wide {
+			max-width: 720px;
+		}
+	}
+
+	@media (max-width: 860px) {
+		.kanban-cols {
+			grid-template-columns: repeat(2, minmax(135px, 1fr));
+		}
+	}
+
+	@media (max-width: 720px) {
+		.product-showcase :global(.cv) {
+			height: auto;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.kanban {
+			overflow-x: auto;
+		}
+
+		.kanban-cols {
+			min-width: 620px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.kanban-card--drag {
+			animation: none;
+		}
+	}
+
+	@media (min-width: 861px) {
+		.product-stack {
+			padding-bottom: clamp(80px, 12vw, 150px);
+		}
+
+		.product-card-shell--agent {
+			min-height: clamp(1500px, 240vh, 2400px);
+		}
+
+		.product-card {
+			position: sticky;
+			top: clamp(88px, 12vh, 132px);
+			transform-origin: center top;
+		}
+
+		.product-card--pipeline {
+			transform: scale(0.985);
+		}
+
+		.product-card--agent {
+			top: clamp(48px, 6vh, 80px);
+			max-height: min(920px, calc(100vh - 72px));
+			padding: clamp(18px, 1.8vw, 28px);
+			gap: 12px;
+			margin-top: 0;
+			overflow: visible;
+		}
+
+		.product-card--agent :global(.ai-demo) {
+			min-height: 0;
+			transform-origin: top center;
+		}
+
+		.product-card--agent .product-eyebrow {
+			margin-bottom: 8px;
+		}
+
+		.product-card--agent .product-copy h3 {
+			font-size: clamp(1.3rem, 1.7vw, 1.6rem);
+			line-height: 1.15;
+		}
+
+		.product-card--agent .product-copy p {
+			margin-top: 6px;
+			font-size: 0.92rem;
+			line-height: 1.45;
+		}
+	}
+</style>

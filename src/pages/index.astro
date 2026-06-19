@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/sections/Hero.astro';
+import Features from '../components/sections/Features.astro';
+import Audiences from '../components/sections/Audiences.astro';
+import Steps from '../components/sections/Steps.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import Faq from '../components/sections/Faq.astro';
+import FinalCta from '../components/sections/FinalCta.astro';
+import { organizationSchema, softwareApplicationSchema, faqSchema } from '../config/schema';
+---
+
+<Layout
+	ogTitle="Tu WhatsApp atiende solo - Waichatt"
+	ogDescription="WhatsApp + IA + CRM en un solo lugar. Para inmobiliarias y desarrolladoras. Empezá gratis, sin tarjeta."
+	canonical="/"
+	jsonLd={[organizationSchema, softwareApplicationSchema, faqSchema]}
+>
+	<main>
+		<Hero />
+		<Features />
+		<Audiences />
+		<Steps />
+		<Pricing />
+		<Faq />
+		<FinalCta />
+	</main>
+</Layout>

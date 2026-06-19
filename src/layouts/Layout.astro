@@ -1,0 +1,48 @@
+---
+import Header from '../components/Header.astro';
+import SEO from '../components/SEO.astro';
+import Footer from '../components/Footer.astro';
+import Tracking from '../components/Tracking.astro';
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+	ogTitle?: string;
+	ogDescription?: string;
+	ogImage?: string;
+	ogType?: 'website' | 'article';
+	publishedTime?: string;
+	modifiedTime?: string;
+	canonical?: string;
+	noindex?: boolean;
+	jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
+}
+
+const { title, description, ogTitle, ogDescription, ogImage, ogType, publishedTime, modifiedTime, canonical, noindex, jsonLd } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<SEO
+			title={title}
+			description={description}
+			ogTitle={ogTitle}
+			ogDescription={ogDescription}
+			ogImage={ogImage}
+			ogType={ogType}
+			publishedTime={publishedTime}
+			modifiedTime={modifiedTime}
+			canonical={canonical}
+			noindex={noindex}
+			jsonLd={jsonLd}
+		/>
+		<Tracking />
+	</head>
+	<body>
+		<Header />
+		<slot />
+		<Footer />
+	</body>
+</html>

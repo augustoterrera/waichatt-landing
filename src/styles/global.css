@@ -1,0 +1,151 @@
+:root {
+	--color-brand: #259a72;
+	--color-brand-hover: #1b7a5b;
+	--color-brand-strong: #134d3a;
+	--color-brand-soft: #e9f5f0;
+	--color-text: #14201b;
+	--color-muted: #5a6661;
+	--color-border: #e4e7e5;
+	--focus-ring: rgba(37, 154, 114, 0.4);
+	--color-surface: #ffffff;
+	--color-background: #ffffff;
+	--container: 1450px;
+	--header-height: 76px;
+	--radius-sm: 6px;
+	--radius-md: 8px;
+	--radius-lg: 14px;
+	--shadow-menu: 0 20px 50px rgba(20, 32, 27, 0.12);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	background: var(--color-background);
+	color: var(--color-text);
+	font-family:
+		Inter,
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		'Helvetica Neue',
+		Arial,
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+img,
+svg,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+	font: inherit;
+}
+
+:focus-visible {
+	outline: 3px solid var(--focus-ring);
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+	}
+}
+
+/* === Scaffolding compartido de las secciones de la home === */
+.section-band {
+	position: relative;
+	padding: clamp(72px, 9vw, 128px) 20px;
+}
+
+/* Separador fino entre secciones: línea centrada que se desvanece en los bordes */
+.section-band::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: min(var(--container), calc(100% - 40px));
+	height: 1px;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		rgba(37, 154, 114, 0.22) 18%,
+		rgba(37, 154, 114, 0.22) 82%,
+		transparent
+	);
+}
+
+.section-inner {
+	width: min(var(--container), 100%);
+	margin-inline: auto;
+}
+
+.section-head {
+	max-width: 760px;
+	margin-bottom: 34px;
+}
+
+.section-head--center {
+	max-width: 720px;
+	margin-inline: auto;
+	margin-bottom: clamp(36px, 5vw, 60px);
+	text-align: center;
+}
+
+.section-band .eyebrow {
+	margin: 0 0 12px;
+	color: var(--color-brand);
+	font-size: 0.82rem;
+	font-weight: 800;
+	text-transform: uppercase;
+}
+
+.section-band h2 {
+	margin: 0;
+	color: var(--color-text);
+	font-size: clamp(2rem, 4vw, 3.25rem);
+	line-height: 1.08;
+}
+
+.section-band h3 {
+	margin: 0;
+	color: var(--color-text);
+	font-size: 1.2rem;
+}
+
+.section-band p {
+	color: var(--color-muted);
+	line-height: 1.68;
+}
+
+@media (max-width: 680px) {
+	.section-band {
+		padding: 64px 16px;
+	}
+}
